@@ -1,7 +1,7 @@
-export default function BookListPage () {
+export default function CounterPage () {
     return (
         <div className="CounterPage">
-            <h1>Book List</h1>
+            <h1>Counter</h1>
         </div>
     );
 }

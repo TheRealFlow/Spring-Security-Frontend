@@ -1,13 +1,19 @@
-import React, {FormEvent, useCallback, useState} from "react";
+import React, {FormEvent, useCallback, useMemo, useState} from "react";
+import {
+    Link,
+    useLocation,
+    useNavigate,
+    useSearchParams
+} from "react-router-dom";
 import axios from "axios";
-import {Link} from "react-router-dom";
-import Auth from "../components/Auth";
 
 export default function LoginPage () {
     const [credentials, setCredentials] = useState({
         username: "",
         password: ""
     });
+
+    const [errors, setErrors] = useState<string[]>([]);
 
     const handleChange = useCallback(
         (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -17,21 +23,48 @@ export default function LoginPage () {
         [credentials, setCredentials]
     );
 
+    const [searchParams] = useSearchParams();
+    const redirect = useMemo(
+        () => searchParams.get("redirect") || "/",
+        [searchParams]
+    );
+    const navigate = useNavigate();
+
+    const location = useLocation();
+
     const login = useCallback(
         async (e: FormEvent<HTMLFormElement>) => {
             e.preventDefault();
-            await axios.post("/app-user/login", null,{
-                headers: {
-                    "Authorization": "Basic " + window.btoa(`${credentials.username}:${credentials.password}`)
-                }
-            });
+
+            setErrors([]);
+
+            try {
+                await axios.post("/app-user/login", null, {
+                    headers: {
+                        "Authorization": "Basic " + window.btoa(`${credentials.username}:${credentials.password}`)
+                    }
+                });
+
+                navigate(redirect);
+            } catch (e) {
+                setErrors((errors) => [
+                    ...errors,
+                    "Invalid username or password"
+                ]);
+            }
         },
-        [credentials]
+        [credentials, navigate, redirect]
     );
 
     return (
         <div className="LoginPage">
             <h1>Login</h1>
+
+            {errors.length > 0 && (
+                <div>
+                    {errors.map((error) => <p key={error}>{error}</p>)}
+                </div>
+            )}
 
             <form onSubmit={login}>
                 <div>
@@ -54,15 +87,9 @@ export default function LoginPage () {
                 </div>
 
                 <div>
-                    <button>Login</button> or <Link to={"/signup"}>sign up here</Link>
+                    <button>Login</button> or <Link to={"/signup" + location.search}>sign up here</Link>
                 </div>
             </form>
-
-            <Auth shouldRedirect={false}>
-                <div>
-                    Du bist schon eingeloggt!!!!
-                </div>
-            </Auth>
         </div>
     );
 }
