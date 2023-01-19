@@ -32,7 +32,7 @@ export default function Root() {
                 </Auth>
             }/>
             <Route path="/counter" element={
-                <Auth roles={["ADMIN"]}>
+                <Auth roles={["BASIC", "ADMIN"]}>
                     <BookPage/>
                 </Auth>
             }/>

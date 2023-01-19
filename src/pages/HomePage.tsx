@@ -18,7 +18,7 @@ export default function HomePage () {
         <div className="HomePage">
             <h1>Home</h1>
             <p>This is the Homepage.</p>
-            <Link to={"/counter"}>Go to Counter</Link>
+            <Link to={"/counter"}>Go to Book-List</Link>
             <Logout/>
         </div>
     );

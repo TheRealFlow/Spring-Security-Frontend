@@ -12,5 +12,10 @@ export default function useBooks() {
         })();
     }, []);
 
-    return {books}
+    async function addBook(book: { author: string; title: string }) {
+        const res = await axios.post("/books", book)
+        setBooks([...books, res.data])
+    }
+
+    return {books, addBook}
 }
