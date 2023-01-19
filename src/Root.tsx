@@ -4,7 +4,7 @@ import SignUpPage from "./pages/SignUpPage";
 import LoginPage from "./pages/LoginPage";
 import Auth from "./components/Auth";
 import HomePage from "./pages/HomePage";
-import CounterPage from "./pages/CounterPage";
+import BookPage from "./pages/BookPage";
 import React, {useMemo} from "react";
 
 export default function Root() {
@@ -27,13 +27,13 @@ export default function Root() {
                 </NoAuth>
             }/>
             <Route path="/" element={
-                <Auth>
+                <Auth roles={["BASIC", "ADMIN"]}>
                     <HomePage/>
                 </Auth>
             }/>
             <Route path="/counter" element={
-                <Auth>
-                    <CounterPage/>
+                <Auth roles={["ADMIN"]}>
+                    <BookPage/>
                 </Auth>
             }/>
         </Routes>
